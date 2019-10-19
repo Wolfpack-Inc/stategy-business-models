@@ -2,6 +2,7 @@ import pandas as pd
 import peewee as pw
 import os
 import re
+import hashlib
 
 class ToolBox:
     def __init__(self, cache_folder='./.db_cache/'):
@@ -27,7 +28,9 @@ class ToolBox:
         self.db.connect()
 
     def create_cache_file_name(self, query):
-        return re.sub(r'[,!@#$=\ \']', '', query)
+        m = hashlib.md5()
+        m.update(query.encode('utf-8'))
+        return m.hexdigest()
 
     def cache_file(self, df, file_name):
         cache_file = self.cache_folder + file_name + '.pkl'
