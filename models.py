@@ -1,6 +1,6 @@
 from peewee import *
 
-database = MySQLDatabase('video-games', **{'charset': 'utf8', 'use_unicode': True, 'host': '165.22.199.122', 'user': 'remote', 'password': 'EtrPCEc0jt'})
+database = MySQLDatabase('video-games', **{'charset': 'utf8', 'sql_mode': 'PIPES_AS_CONCAT', 'use_unicode': True, 'host': '165.22.199.122', 'user': 'remote', 'password': 'EtrPCEc0jt'})
 
 class UnknownField(object):
     def __init__(self, *_, **__): pass
@@ -8,6 +8,32 @@ class UnknownField(object):
 class BaseModel(Model):
     class Meta:
         database = database
+
+class CriticReviews(BaseModel):
+    date = DateTimeField(null=True)
+    game = CharField()
+    grade = IntegerField(null=True)
+    lang = CharField(null=True)
+    review = TextField(null=True)
+    sentiment = CharField(null=True)
+    source = CharField()
+
+    class Meta:
+        table_name = 'critic_reviews'
+        indexes = (
+            (('game', 'source'), True),
+        )
+        primary_key = CompositeKey('game', 'source')
+
+class CriticReviewsClean(BaseModel):
+    date = DateTimeField(null=True)
+    game = CharField(null=True)
+    grade = IntegerField(null=True)
+    review = TextField(null=True)
+    sentiment = FloatField(null=True)
+
+    class Meta:
+        table_name = 'critic_reviews_clean'
 
 class Games(BaseModel):
     console = CharField(null=True)
@@ -25,21 +51,6 @@ class Games(BaseModel):
 
     class Meta:
         table_name = 'games'
-
-class CriticReviews(BaseModel):
-    date = DateTimeField(null=True)
-    game = ForeignKeyField(column_name='game', field='game', model=Games)
-    grade = IntegerField(null=True)
-    lang = CharField(null=True)
-    review = TextField(null=True)
-    source = CharField()
-
-    class Meta:
-        table_name = 'critic_reviews'
-        indexes = (
-            (('game', 'source'), True),
-        )
-        primary_key = CompositeKey('game', 'source')
 
 class GameDevelopers(BaseModel):
     developer = CharField()
@@ -100,6 +111,16 @@ class UserReviews(BaseModel):
             (('game', 'username'), True),
         )
         primary_key = CompositeKey('game', 'username')
+
+class UserReviewsClean(BaseModel):
+    date = DateTimeField(null=True)
+    game = CharField(null=True)
+    grade = IntegerField(null=True)
+    review = TextField(null=True)
+    sentiment = FloatField(null=True)
+
+    class Meta:
+        table_name = 'user_reviews_clean'
 
 class WeeklyPrices(BaseModel):
     complete = FloatField(null=True)
