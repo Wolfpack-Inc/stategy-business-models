@@ -106,3 +106,5 @@ venv.bak/
 .db_cache
 games_overlap.ipynb
 user_review_clean
+cross-sectional-data-with-control-variables.csv
+cross_sectional_data.csv
