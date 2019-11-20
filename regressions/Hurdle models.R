@@ -19,6 +19,22 @@ mod_hurdle <- hurdle(nr_reviews ~ user_sentiment_var * critic_sentiment_var + us
 results_hurdle_2 <- summary(mod_hurdle)
 summary(mod_hurdle)
 
+# Hurde model - top 3 genre
+table(data$genre)
+top3genre <- c('Action',"General","Role-Playing")
+data$top3genre  <- ifelse(data$genre %in% top3genre,1,0)
+
+#When adding factor(console) error in solve
+hurdle2 <- hurdle(nr_reviews ~ user_sentiment_var * critic_sentiment_var + user_avg_grade + critic_avg_grade + critic_volume + factor(top3genre), data = data)
+summary(hurdle2)
+
+# Hurdle model - top 3 genre & console
+table(data$console)
+top3console <- c("pc","playstation-4","xbox-one")
+data$top3console <- ifelse(data$console %in% top3console,1,0)
+
+hurdle3 <- hurdle(nr_reviews ~ user_sentiment_var * critic_sentiment_var + user_avg_grade + critic_avg_grade + critic_volume + factor(top3genre) + factor(top3console), data = data)
+summary(hurdle3)
 # Visualize hurdle
 #install.packages("countreg", repos="http://R-Forge.R-project.org")
 library(countreg)
