@@ -9,6 +9,8 @@ library(dplyr)          # load package for filtering
 
 # load the data 
 getwd()
-data <- read.csv("C:/Users/20190298/Documents/GitHub/strategy-business-models/final-df-count-models.csv")
+data <- read.csv("Documents/GitHub/strategy-business-models/datasets/final-df-cs-2weeks-8-reviews.csv")
 
-OLS_model <- glm(nr_reviews ~ user_sentiment_var * critic_sentiment_var + user_avg_grade + critic_avg_grade + critic_volume + factor(genre) + factor(console))
+OLS_model <- lm(nr_reviews ~ user_sentiment_var * critic_sentiment_var + user_avg_grade + critic_avg_grade + critic_volume + is_action + is_pc,
+                 data = data)
+summary(OLS_model)
